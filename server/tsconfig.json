@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".",
+      "declaration": true,
+      "esModuleInterop": true,
+      "removeComments": true,
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "noImplicitAny": true,
+      "outDir": "build",
+      "paths": {
+        "*": [
+          "node_modules/*" 
+        ]
+      },
+      "sourceMap": false,
+      "strict": true,
+      "target": "es6",
+    },
+    "include": [
+      "./**/*"
+    ],
+    "exclude": [
+      "node_modules",
+      "tests",
+      "**/*.tests.ts",
+      "build"
+    ]
+  }
