@@ -8,59 +8,24 @@
  *
  * Imports below
  */
+import React, { useState } from 'react';
+import { screens } from './types';
+import { Error, Loading, Fly, Settings, Credits } from './screens'
 
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View , TouchableOpacity} from 'react-native';
+
 
 /**
- * Runs the main code of the app
- *
- * @remarks
- * This template is from {@Link https://docs.expo.io/tutorial/text/}
- *
- * @returns a render of the application
- *
- * @beta
+ * App Entry Point
  */
-
 export default function App() {
-  return (
-    <View style={styles.container}>
-		<Text>Open up App.tsx to start working on your app!</Text>
-		<StatusBar style="auto"/>
-		
-		<TouchableOpacity onPress={() => alert('Hello World')} style={styles.button}>
-			<Text style={styles.buttonText}> Test </Text>
-		</TouchableOpacity>
-    </View>
-  );
-}
 
-/**
- * Runs the main code of the app
- *
- * @remarks
- * This template is from https://docs.expo.io/tutorial/text/
- *
- * @returns a render of the application
- *
- * @alpha
- */
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  button: {
-	backgroundColor: "blue",
-	padding: 20,
-	borderRadius: 5,
-  },
-  buttonText: {
-	fontsize: 20,
-	color: '#fff',
-  },
-});
+  const [screen, setScreen] = useState<screens>('loading');
+
+  switch(screen) {
+    case 'loading':   return (<Loading onScreenChange={(screen) => setScreen(screen)} />);
+    case 'fly':       return (<Fly onScreenChange={(screen) => setScreen(screen)} />);
+    case 'settings':  return (<Settings onScreenChange={(screen) => setScreen(screen)} />);
+    case 'credits':   return (<Credits onScreenChange={(screen) => setScreen(screen)} />)
+    default:          return (<Error onScreenChange={(screen) => setScreen(screen)} />);
+  }
+}

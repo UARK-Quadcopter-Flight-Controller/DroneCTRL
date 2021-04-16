@@ -8,9 +8,10 @@
       "moduleResolution": "node",
       "noImplicitAny": true,
       "outDir": "build",
+      "typeRoots": ["./node_modules/@types"],
       "paths": {
         "*": [
-          "node_modules/*" 
+          "./node_modules/*" 
         ]
       },
       "sourceMap": false,
@@ -18,10 +19,10 @@
       "target": "es6",
     },
     "include": [
-      "./**/*"
+      "./src/**/*"
     ],
     "exclude": [
-      "node_modules",
+      "../node_modules",
       "tests",
       "**/*.tests.ts",
       "build"

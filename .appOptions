@@ -1,0 +1,3 @@
+# This is to be used for app flags and NOT any API keys. Use .env for that
+
+OVERRIDE_LOADING_SCREEN_LOCKOUT=true
