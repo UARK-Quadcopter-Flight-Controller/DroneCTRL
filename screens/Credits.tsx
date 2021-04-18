@@ -14,6 +14,11 @@ export default function Credits(props: props) {
           "Icons made by <a href='https://www.freepik.com' title='Freepik'>Freepik</a> from <a href='https://www.flaticon.com/' title='Flaticon'>www.flaticon.com</a></div>"
         }
       </Text>
+      <Text>
+        {
+          "<div>Icons made by <a href='https://www.flaticon.com/authors/eucalyp' title='Eucalyp'>Eucalyp</a> from <a href='https://www.flaticon.com/' title='Flaticon'>www.flaticon.com</a></div>"
+        }
+      </Text>
       <TouchableOpacity
         onPress={() => props.onScreenChange("settings")}
         style={styles.button}

@@ -47,7 +47,7 @@ export default function Loading(props: props) {
     })();
   }, []);
 
-  let text = "Waiting..";
+  let text = "Connecting to GPS...";
   if (errorMsg) {
     text = errorMsg;
   } else if (location) {
@@ -58,9 +58,12 @@ export default function Loading(props: props) {
   // we can use the .env parameter to override the "am I connected" check
   if (location) {
     if (OVERRIDE_LOADING_SCREEN_LOCKOUT) {
-      setTimeout(() => {
-        props.onScreenChange("fly");
-      }, 3000);
+        // TODO: causes a warning as it is not use in a useEffect block
+        // setTimeout is a temporary measure
+        setTimeout(() => {
+            props.onScreenChange("fly");
+        }, 100);
+
     } else {
       // TODO: check to see if connected to drone network with tcp request
     }
@@ -74,7 +77,7 @@ export default function Loading(props: props) {
                 Attribution has already been given in the credits screen
             */}
         <ActivityIndicator />
-        <Text>Connecting to the Quadcopter: {text}</Text>
+        <Text>{text}</Text>
       </View>
     </>
   );
