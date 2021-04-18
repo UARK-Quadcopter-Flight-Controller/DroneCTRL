@@ -1,5 +1,5 @@
 {
-  "name": "ESPMockServer",
+  "name": "DroneCTRLMockServer",
   "version": "1.0.0",
   "description": "A mock of the web server running on the flight controller's ESP8266 module",
   "main": "./build/index.js",
