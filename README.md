@@ -12,7 +12,7 @@ To install dependencies, from the root of the project, run:
 npm run prep
 ```
 
-To run the program (both the metro app bundel server and the "mock" ESP8266 communication server), run:
+To run the program (both the metro app bundler server and the "mock" ESP8266 communication server), run:
 
 ```sh
 npm start
