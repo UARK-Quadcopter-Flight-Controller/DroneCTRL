@@ -11,56 +11,33 @@
 
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View , TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View , TouchableOpacity, useState} from 'react-native';
+import TcpSocket from 'react-native-tcp-socket';
 
 /**
- * Runs the main code of the app
- *
- * @remarks
- * This template is from {@Link https://docs.expo.io/tutorial/text/}
- *
- * @returns a render of the application
- *
- * @beta
+ * Components
  */
-
-export default function App() {
-  return (
-    <View style={styles.container}>
-		<Text>Open up App.tsx to start working on your app!</Text>
-		<StatusBar style="auto"/>
-		
-		<TouchableOpacity onPress={() => alert('Hello World')} style={styles.button}>
-			<Text style={styles.buttonText}> Test </Text>
-		</TouchableOpacity>
-    </View>
-  );
-}
+import HUD from './components/HUD';
 
 /**
- * Runs the main code of the app
+ * Runs the main code of the app which is the combination of all of the components
  *
- * @remarks
- * This template is from https://docs.expo.io/tutorial/text/
- *
- * @returns a render of the application
+ * @returns a render of all the components together
  *
  * @alpha
  */
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  button: {
-	backgroundColor: "blue",
-	padding: 20,
-	borderRadius: 5,
-  },
-  buttonText: {
-	fontsize: 20,
-	color: '#fff',
-  },
-});
+
+export default function App()
+{
+	return (
+		<HUD/>
+	);
+}
+
+/**
+ * This consists of all of the styles necessary in the app.
+ * Because the main app is made of components, this is not necessary.
+ *
+ * @alpha
+ */
+//const styles = StyleSheet.create ({})
