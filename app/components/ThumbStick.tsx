@@ -1,18 +1,30 @@
+/*
+ * This file holds the ThumbSticks
+ */
+
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 
 export default function ThumbStick() {
-    return (
-        <View style={styles.container}>
-            <View style={styles.outerCircle}>
-            <View style={styles.innerCircle}></View>
-            </View>
-            
+  /**
+   * Creates the Thumbsticks
+   *
+   * @returns a value of the thumbsticks
+   */
+  return (
+    <View style={styles.container}>
+        <View style={styles.outerCircle}>
+        <View style={styles.innerCircle}></View>
         </View>
-    )
+    </View>
+  )
 }
 
-
+/**
+ * This consists of all of the styles necessary in this portion of the app.
+ *
+ * @alpha
+ */
 const styles = StyleSheet.create({
     container: {
       alignItems: "center",

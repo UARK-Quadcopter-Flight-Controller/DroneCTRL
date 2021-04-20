@@ -1,3 +1,8 @@
+/*
+ * This file focuses on flying the actual drone by sending information to here to be interpretted.
+ * Then using the joysticks, the app sends HTTP requests back to fly the actual drone
+ */
+
 import MapView, { Marker } from "react-native-maps";
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Dimensions, Text } from "react-native";
@@ -16,11 +21,23 @@ import ThumbStick from "../components/ThumbStick";
 // import { TODO } from "@env"; was using this for mapbox, but is !compatible with expo
 
 interface props {
+  /**
+   * Creates an instance of the callback function to change screens
+   *
+   * @remarks
+   * Calls the screenchange which will change the app.tsx
+   */
   onScreenChange(screen: screens): void;
 }
 
 export default function Fly(props: props) {
-  // Enforce landscape-right orientation
+  /**
+   * Enforces a landscape orientation of the app.
+   * After the initial GPS check, now it starts taking the data from the location of the app.
+   * 
+   * @returns a map of the area
+   * 
+   */
   changeOrientationLandscape();
 
   // Get the current location
@@ -107,6 +124,11 @@ export default function Fly(props: props) {
   );
 }
 
+/**
+ * This consists of all of the styles necessary in this portion of the app.
+ *
+ * @alpha
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -1,12 +1,28 @@
+/*
+ * This file tells the user that they received an error and they need to restart the app
+ */
+
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { screens } from "../types";
 
 interface props {
+  /**
+   * Creates an instance of the callback function to change screens
+   *
+   * @remarks
+   * Calls the screenchange which will change the app.tsx
+   */
   onScreenChange(screen: screens): void;
 }
 
 export default function Error(props: props) {
+  /**
+   * An error occurred therefore the app stops everything and displays the error
+   * 
+   * @returns an error
+   * 
+   */
   return (
     <View style={styles.container}>
       <Text>Something went wrong</Text>
@@ -20,6 +36,11 @@ export default function Error(props: props) {
   );
 }
 
+/**
+ * This consists of all of the styles necessary in this portion of the app.
+ *
+ * @alpha
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

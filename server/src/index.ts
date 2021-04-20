@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
 
-
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
@@ -41,6 +40,5 @@ app.post('/fly', (req, res) => {
         status:  true
     });
 });
-
 
 app.listen(PORT, () => console.log(`App is alive at http://localhost:${PORT}`));
