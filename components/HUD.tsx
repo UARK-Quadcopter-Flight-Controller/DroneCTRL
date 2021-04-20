@@ -53,13 +53,20 @@ export default function HUD(props)
 	
 	return (
 		<View style={styles.container}>
-			<Text>Open up App.tsx to start working on your app!</Text>
-			<StatusBar style="auto"/>
-			
-			<TouchableOpacity onPress={() => alert('Hello World')} style={styles.button}>
-				<Text style={styles.buttonText}> Test </Text>
-			</TouchableOpacity>
+			<View style={styles.outerCircle}>
+				<View style={styles.innerCircle}>
+				</View>
+			</View>
 		</View>
+	
+		//<View style={styles.container}>
+			//<Text>Open up App.tsx to start working on your app!</Text>
+			//<StatusBar style="auto"/>
+			
+			//<TouchableOpacity onPress={() => alert('Hello World')} style={styles.button}>
+				//<Text style={styles.buttonText}> Test </Text>
+			//</TouchableOpacity>
+		//</View>
 	);
 }
 
@@ -106,21 +113,25 @@ function useInterval(callback, delay)
  *
  * @alpha
  */
-const styles = StyleSheet.create
-({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  button: {
-	backgroundColor: "blue",
-	padding: 20,
-	borderRadius: 5,
-  },
-  buttonText: {
-	fontsize: 20,
-	color: '#fff',
-  },
+const styles = StyleSheet.create({
+    container: {
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    outerCircle: {
+      width: 165,
+      height: 165,
+      borderRadius: 100,
+      backgroundColor: "#555",
+      opacity: 0.7
+    },
+    innerCircle: {
+        width: 50,
+        height: 50,
+        borderRadius: 50,
+        backgroundColor: "#000",
+        position: 'relative',
+        top: 57,
+        left: 57
+    }
 });
