@@ -13,6 +13,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect, useRef} from 'react';
 import { StyleSheet, Text, View , TouchableOpacity} from 'react-native';
 import TcpSocket from 'react-native-tcp-socket';
+import ThumbStick from "./ThumbStick";
 
 /**
  * Runs the HUD which keeps track of the data being sent through HTTP/TCP/UDP protocols
@@ -53,10 +54,7 @@ export default function HUD(props)
 	
 	return (
 		<View style={styles.container}>
-			<View style={styles.outerCircle}>
-				<View style={styles.innerCircle}>
-				</View>
-			</View>
+			<ThumbStick/>
 		</View>
 	
 		//<View style={styles.container}>
