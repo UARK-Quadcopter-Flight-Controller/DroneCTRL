@@ -5,7 +5,7 @@ export default function ThumbStick() {
     return (
         <View style={styles.container}>
             <View style={styles.outerCircle}>
-            <View style={styles.innerCircle}></View>
+                <View style={styles.innerCircle}></View>
             </View>
             
         </View>

@@ -57,6 +57,14 @@ export default function Loading(props: props) {
   // In the case that we are not connected to the ESP and are developing,
   // we can use the .env parameter to override the "am I connected" check
   if (location) {
+    (async () => {
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({payload: location})
+      };
+      fetch('http://192.168.1.11:4000/seed', requestOptions);
+    })();
     if (OVERRIDE_LOADING_SCREEN_LOCKOUT) {
         // TODO: causes a warning as it is not use in a useEffect block
         // setTimeout is a temporary measure

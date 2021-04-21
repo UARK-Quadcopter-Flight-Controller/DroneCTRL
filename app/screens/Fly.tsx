@@ -52,26 +52,25 @@ export default function Fly(props: props) {
 
   // Get Data from Drone HTTP API
   const [droneData, setDroneData] = useState(null);
-//   useEffect(() => {
-//     const getDroneData = async () => {
-//       fetch("http://192.168.1.11:4000/getData")
-//         .then((result) => result.json())
-//         .then((result) => {
-//           console.log(result.data, new Date().toISOString());
-//           setDroneData(result.data);
-//         })
-//         .catch((e) => (console.log("There was an issue fetching from the URL given")));
-//     };
-//     getDroneData();
-//     const interval = setInterval(() => getDroneData(), 100);
-//     return () => {
-//       clearInterval(interval);
-//     };
-//   }, []);
+  useEffect(() => {
+    const getDroneData = async () => {
+      fetch("http://192.168.1.11:4000/getData")
+        .then((result) => result.json())
+        .then((result) => {
+          console.log(result.data, new Date().toISOString());
+          setDroneData(result.data);
+        })
+        .catch((e) => (console.log("There was an issue fetching from the URL given")));
+    };
+    getDroneData();
+    const interval = setInterval(() => getDroneData(), 10000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   // Call hook for phone location API 
   useMountEffect(getLocation);
-
   return (
     <View style={styles.container} pointerEvents="none">
       <MapView

@@ -1,8 +1,11 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import Drone, { instance } from './Drone';
 
 
 dotenv.config();
+process.env.LOG_LEVEL = 'Info';
+let MockDrone = new Drone();
 
 const PORT = process.env.PORT || 4000;
 
@@ -17,26 +20,48 @@ app.get('/status', (req, res) => {
 
 app.get('/getData', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
+
+    // Retrieve values from the mock drone instance
+    const { Ax, Ay, Az } = MockDrone.getAccelerometer();
+    const { Gx, Gy, Gz } = MockDrone.getGyroscope();
+    const { latitude, longitude } = MockDrone.getGPS();
+
     res.send({
         data: {
-            Ax: 0.0,
-            Ay: 0.0,
-            Az: 0.0,
-            Gx: 0.0,
-            Gy: 0.0,
-            Gz: 1.0,
-            Bt: 20.3,
-            Bp: 100000.0,
-            Ba: 250,
-            Mh: 210,
-            La: 36.1897,
-            Lo: -94.8723
+            Ax: Ax,
+            Ay: Ay,
+            Az: Az,
+            Gx: Gx,
+            Gy: Gy,
+            Gz: Gz,
+            Bt: MockDrone.getTemperature(),
+            Bp: MockDrone.getPressure(),
+            Ba: MockDrone.getAltitude(),
+            Mh: MockDrone.getHeading(),
+            La: latitude,
+            Lo: longitude
         }
     });
 });
 
 app.post('/fly', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
+    res.send({
+        status:  true
+    });
+});
+
+app.post('/seed', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+
+    // Create a new Mock Drone instance to "reset" for a demo
+    MockDrone = new Drone();
+
+    // Get the location data from the phone to initially make the drone in a close prox to the phone
+    let payload = req.body.payload;
+    console.log(payload)
+    MockDrone.setGPS(payload.coords.latitude, payload.coords.longitude);
+    MockDrone.setPressure(Drone.getPressureFromAltitude(payload.coords.altitude))
     res.send({
         status:  true
     });
