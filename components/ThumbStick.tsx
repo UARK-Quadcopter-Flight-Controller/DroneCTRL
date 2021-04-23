@@ -1,8 +1,13 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, PanResponder, Animated,  } from "react-native";
 
-class Draggable extends Component {
-  constructor(props) {
+interface props {
+    thumbStickLocation: (x: number, y: number) => void;
+    isThrottle?: boolean
+};
+
+class Draggable extends Component<props, {}> {
+  constructor(props: props) {
     super(props);
 
     this.state = {
@@ -20,32 +25,46 @@ class Draggable extends Component {
     this.panResponder = PanResponder.create({
         onStartShouldSetPanResponder: (e, gesture) => true,
         onPanResponderGrant: (e, gesture) => {
-          this.state.pan.setOffset({
-            x: this._val.x,
-            y:this._val.y
-          })
+		  if(this.props.isThrottle)
+		  {
+			this.state.pan.setOffset({
+				x:this._val.x,
+				y:this._val.y
+			})
+		  }
+		  else
+		  {
+			this.state.pan.setOffset({
+				x:0,
+				y:0
+			})
+		  }
+		  //console.log(this._val.y)
           this.state.pan.setValue({ x:0, y:0})
         },
-        onPanResponderMove: (e, gesture) => { this.boundsLimit(this.state.pan.x._value, this.state.pan.y._value) == false ? null : Animated.event([ 
+        onPanResponderMove: (e, gesture) => { this.boundsLimit(gesture.dx, gesture.dy, this._val.y) == false ? null : Animated.event([ 
           null, { dx: this.state.pan.x, dy: this.state.pan.y }
-        ])(e, gesture)},
+        ], {useNativeDriver: false})(e, gesture); /*this.props.thumbStickLocation(this.state.pan.x._value, this.state.pan.y._value)*/},
         onPanResponderRelease: (e, gesture) => {
           Animated.spring(this.state.pan, {
             toValue: { x:0, y:0},
-            friction: 100
+            friction: 100,
+            useNativeDriver: false
           }).start();
+         //	this.props.thumbStickLocation(0, 0);
         }
       });
   }
 
-  boundsLimit(x, y) {
-	//console.log(x + " " + y)
-	if((x > 80) || (x < -80))
+  boundsLimit(dx, dy, y) {
+	//console.log(x + " " + y, Date.now(), this.props.isThrottle)
+	//console.log(y)
+	if((dx > 80) || (dx < -80))
 	{
 		//Change to send altitude change
 		return false;
 	}
-	if((y > 80) || (y < -80))
+	if(((y > 80) && (dy + y > 80)) || ((y < -80) && (dy + y < -80)))
 	{
 		//Change to send altitude change
 		return false;
@@ -79,12 +98,17 @@ class Draggable extends Component {
 }
 
 
-export default class App extends Component {
+export default class App extends Component<props, {}> {
+    constructor(props: props) {
+        super();
+
+    }
+
   render() {
     return (
 	  <View style={styles.container}>
 		<View style={styles.outerCircle}>
-			<Draggable bounds="parent"/>
+			<Draggable bounds="parent" isThrottle={this.props.isThrottle} thumbStickLocation={(x, y) => this.props.thumbStickLocation(x, y)}/>
 		</View>
 	  </View>
     );
