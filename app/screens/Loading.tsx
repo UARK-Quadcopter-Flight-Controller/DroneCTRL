@@ -13,6 +13,7 @@ import * as Location from "expo-location";
 
 // @ts-ignore: Intellisense doesn't recognize @appconfig as a source and will yell about it
 import { OVERRIDE_LOADING_SCREEN_LOCKOUT } from "@appconfig";
+import { screenPortrait } from "../hooks/screenOrientation";
 
 // README: This file needs some cleaning up. I was initially just testing the location
 // permissions and first launch on the loading screen was a good place if any to try
@@ -28,7 +29,7 @@ interface props {
 
 export default function Loading(props: props) {
   // Enfore portrait orientation
-  changeOrientationPortrait();
+  screenPortrait();
 
   // State variables
   const [location, setLocation] = useState<any>(null);

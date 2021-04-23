@@ -7,7 +7,7 @@
     "start": "run-p start:*",
     "start:app": "cd app && npm run start",
     "start:server": "cd server && npm run start:watch",
-    "prep": "run-p prep:*",
+    "prep": "npm i && run-p prep:*",
     "prep:app": "cd app && npm run prep",
     "prep:server": "cd server && npm run prep"
   },

@@ -2,7 +2,6 @@ import MapView, { Marker } from "react-native-maps";
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Dimensions, Text } from "react-native";
 import {
-  changeOrientationLandscape,
   getDeviceHeight,
   getDeviceWidth,
 } from "../helpers/orientation";
@@ -11,6 +10,7 @@ import * as Location from "expo-location";
 import markerImage from "../assets/pilotsm.png";
 import { useMountEffect } from "../helpers/hookHelpers";
 import ThumbStick from "../components/ThumbStick";
+import { screenLandscapeLeft } from "../hooks/screenOrientation";
 
 // @ts-ignore: Intellisense doesn't recognize @env as a source and will yell about it
 // import { TODO } from "@env"; was using this for mapbox, but is !compatible with expo
@@ -21,7 +21,7 @@ interface props {
 
 export default function Fly(props: props) {
   // Enforce landscape-right orientation
-  changeOrientationLandscape();
+  screenLandscapeLeft();
 
   // Get the current location
   const [location, setLocation] = useState({ lat: 0.0, lon: 0.0 });
@@ -51,19 +51,33 @@ export default function Fly(props: props) {
   };
 
   // Get Data from Drone HTTP API
-  const [droneData, setDroneData] = useState(null);
+  const [droneData, setDroneData] = useState({
+    Ax: 0,
+    Ay: 0,
+    Az: 0,
+    Ba: 0,
+    Bp: 0,
+    Bt: 0,
+    Db: 0,
+    Dr: 0,
+    Gx: 0,
+    Gy: 0,
+    Gz: 0,
+    La: 0,
+    Lo: 0,
+    Mh: 0});
   useEffect(() => {
     const getDroneData = async () => {
       fetch("http://192.168.1.11:4000/getData")
         .then((result) => result.json())
         .then((result) => {
-          console.log(result.data, new Date().toISOString());
+          // console.log(result.data, new Date().toISOString());
           setDroneData(result.data);
         })
         .catch((e) => (console.log("There was an issue fetching from the URL given")));
     };
     getDroneData();
-    const interval = setInterval(() => getDroneData(), 10000);
+    const interval = setInterval(() => getDroneData(), 1000);
     return () => {
       clearInterval(interval);
     };
@@ -72,6 +86,7 @@ export default function Fly(props: props) {
   // Call hook for phone location API 
   useMountEffect(getLocation);
   return (
+    <>
     <View style={styles.container} pointerEvents="none">
       <MapView
         style={{
@@ -93,16 +108,22 @@ export default function Fly(props: props) {
           image={markerImage}
         />
       </MapView>
-      <View style={styles.txt}>
-        <ThumbStick />
-      </View>
-      {/* <Text style={styles.txt}>
-        TODO: this map will not have touch interaction and will animate to
-        current location {"\n"}
-        Only "touchable" things here should be joysticks and settings button {"\n"}
-        Location: LAT = {location.lat}, LON = {location.lon}
-      </Text> */}
+      
+      <Text style={styles.hud}>
+        {droneData.La > 0 ? Math.abs(droneData.La).toPrecision(8) + "ºN" : Math.abs(droneData.La).toPrecision(8) + "ºS"}{", "} 
+        {droneData.Lo > 0 ? Math.abs(droneData.Lo).toPrecision(8) + "ºE" : Math.abs(droneData.Lo).toPrecision(8) + "ºW"}
+      </Text>
+      <Text style={[styles.batt, droneData.Db > 35 ? {color: 'lime'} : {color: 'red'}]}>
+      🔋: {droneData.Db.toPrecision(4)}%
+      </Text>
     </View>
+    <View style={styles.lstick}>
+        <ThumbStick isThrottle/>
+      </View>
+      <View style={styles.rstick}>
+        <ThumbStick />
+    </View>
+    </>
   );
 }
 
@@ -113,10 +134,35 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  txt: {
+  lstick: {
     bottom: 10,
     left: 40,
     position: "absolute",
     color: "red",
+  },
+  rstick: {
+    bottom: 10,
+    right: 40,
+    position: "absolute",
+    color: "red",
+  },
+  hud: {
+    top: 10,
+    position: "absolute",
+    color: "orange",
+    fontSize: 18,
+    fontWeight: 'bold',
+    backgroundColor: '#888',
+    padding: 5,
+  },
+  batt: {
+    top: 10,
+    right: 40,
+    position: "absolute",
+    fontSize: 18,
+    fontWeight: 'bold',
+    backgroundColor: '#888',
+    padding: 5,
+    width: 100
   },
 });

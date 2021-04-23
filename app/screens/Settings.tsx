@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import ThumbStick from "../components/ThumbStick";
 import { screens } from "../types";
 
 interface props {
@@ -10,8 +11,8 @@ interface props {
 
 export default function Settings(props: props) {
     return (
-        <View>
-            <Text>Settings Page</Text>
+        <View style={{alignItems: 'center', flexDirection: 'row'}}>
+            <ThumbStick></ThumbStick>
         </View>
     )
 }
