@@ -33,20 +33,21 @@ class Draggable extends Component<props, {}> {
         },
         onPanResponderMove: (e, gesture) => { this.boundsLimit(gesture.dx, gesture.dy) == false ? null : Animated.event([ 
           null, { dx: this.state.pan.x, dy: this.state.pan.y }
-        ], {useNativeDriver: false})(e, gesture); /* console.log("YAY") */},
+        ], {useNativeDriver: false})(e, gesture); this.props.thumbStickLocation(this.state.pan.x._value, this.state.pan.y._value);},
         onPanResponderRelease: (e, gesture) => {
           Animated.spring(this.state.pan, {
             toValue: this.props.isThrottle ? { x:0, y:this.state.pan.y._value} : { x:0, y:0},
             friction: 100,
             useNativeDriver: false
           }).start();
-        //   this.props.thumbStickLocation(0, 0);
+          if(this.props.isThrottle) { this.props.thumbStickLocation(0, this.state.pan.y._value); }
+          else { this.props.thumbStickLocation(0, 0); }
         }
       });
   }
 
   boundsLimit(x, y) {
-	console.log(x + " " + y, Date.now(), this.props.isThrottle)
+	// console.log(x + " " + y, Date.now(), this.props.isThrottle)
 	if((x > 80) || (x < -80))
 	{
 		//Change to send altitude change

@@ -118,10 +118,10 @@ export default function Fly(props: props) {
       </Text>
     </View>
     <View style={styles.lstick}>
-        <ThumbStick isThrottle/>
+        <ThumbStick isThrottle thumbStickLocation={(x,y) => console.log(Date.now(), x, y)}/>
       </View>
       <View style={styles.rstick}>
-        <ThumbStick />
+      <ThumbStick thumbStickLocation={(x,y) => console.log(Date.now(), x, y)}/>
     </View>
     </>
   );
