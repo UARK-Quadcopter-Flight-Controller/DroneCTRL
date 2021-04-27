@@ -8,9 +8,11 @@ import {
 import { screens } from "../types";
 import * as Location from "expo-location";
 import markerImage from "../assets/pilotsm.png";
+import droneImage from "../assets/droneicn.png";
 import { useMountEffect } from "../helpers/hookHelpers";
 import ThumbStick from "../components/ThumbStick";
 import { screenLandscapeLeft } from "../hooks/screenOrientation";
+import { getCardinalDirection } from "../helpers/math";
 
 // @ts-ignore: Intellisense doesn't recognize @env as a source and will yell about it
 // import { TODO } from "@env"; was using this for mapbox, but is !compatible with expo
@@ -25,6 +27,8 @@ export default function Fly(props: props) {
 
   // Get the current location
   const [location, setLocation] = useState({ lat: 0.0, lon: 0.0 });
+  const [altstick, setAltstick] = useState({ x: 0.0, y: 0.0 });
+  const [dirstick, setDirstick] = useState({ x: 0.0, y: 0.0 });
 
   const getLocation = async () => {
     let { status } = await Location.requestPermissionsAsync();
@@ -76,12 +80,32 @@ export default function Fly(props: props) {
         })
         .catch((e) => (console.log("There was an issue fetching from the URL given")));
     };
+
     getDroneData();
-    const interval = setInterval(() => getDroneData(), 1000);
+
+    const interval = setInterval(() => getDroneData(), 10);
     return () => {
       clearInterval(interval);
     };
   }, []);
+
+  useEffect(() => {
+    const sendDroneData = async () => {
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ payload: {
+          altStick: altstick,
+          dirStick: dirstick
+        } }),
+      };
+
+      fetch("http://192.168.1.11:4000/fly", requestOptions)
+        .catch((e) => (console.log("There was an issue sending to the URL given")));
+    }
+    sendDroneData();
+
+  }, [altstick, dirstick])
 
   // Call hook for phone location API 
   useMountEffect(getLocation);
@@ -96,7 +120,7 @@ export default function Fly(props: props) {
         showsCompass
         legalLabelInsets={{ bottom: 0, top: 0, left: 0, right: 0 }}
         camera={{
-          center: { latitude: location.lat, longitude: location.lon },
+          center: { latitude: droneData.La, longitude: droneData.Lo },
           heading: 0,
           pitch: 100,
           zoom: 100,
@@ -104,24 +128,30 @@ export default function Fly(props: props) {
         }}
       >
         <Marker
-          coordinate={{ latitude: location.lat, longitude: location.lon }}
+          coordinate={{ latitude: 36.068429, longitude: -94.170765 }}
           image={markerImage}
+        />
+        <Marker
+          coordinate={{ latitude: droneData.La, longitude: droneData.Lo }}
+          image={droneImage}
+          style={{transform: [{ rotateZ: droneData.Mh + 'deg' }]}}
         />
       </MapView>
       
       <Text style={styles.hud}>
         {droneData.La > 0 ? Math.abs(droneData.La).toPrecision(8) + "ºN" : Math.abs(droneData.La).toPrecision(8) + "ºS"}{", "} 
-        {droneData.Lo > 0 ? Math.abs(droneData.Lo).toPrecision(8) + "ºE" : Math.abs(droneData.Lo).toPrecision(8) + "ºW"}
+        {droneData.Lo > 0 ? Math.abs(droneData.Lo).toPrecision(8) + "ºE" : Math.abs(droneData.Lo).toPrecision(8) + "ºW"}{"\n"}
+        Alt: {parseInt(`${droneData.Ba}`)} ft.   Heading: {parseInt(`${droneData.Mh}`)}º {getCardinalDirection(droneData.Mh)}
       </Text>
       <Text style={[styles.batt, droneData.Db > 35 ? {color: 'lime'} : {color: 'red'}]}>
-      🔋: {droneData.Db.toPrecision(4)}%
+      🔋: {parseInt(`${droneData.Db}`)}%
       </Text>
     </View>
     <View style={styles.lstick}>
-        <ThumbStick isThrottle thumbStickLocation={(x,y) => console.log(Date.now(), x, y)}/>
+        <ThumbStick isThrottle thumbStickLocation={(x,y) => setAltstick({x: x, y: y})}/>
       </View>
       <View style={styles.rstick}>
-      <ThumbStick thumbStickLocation={(x,y) => console.log(Date.now(), x, y)}/>
+      <ThumbStick thumbStickLocation={(x,y) => setDirstick({x: x, y: y})}/>
     </View>
     </>
   );

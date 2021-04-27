@@ -12,7 +12,7 @@ interface props {
 export default function Settings(props: props) {
     return (
         <View style={{alignItems: 'center', flexDirection: 'row'}}>
-            <ThumbStick></ThumbStick>
+
         </View>
     )
 }

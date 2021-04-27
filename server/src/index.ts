@@ -3,6 +3,9 @@ import dotenv from 'dotenv';
 import express from 'express';
 import Drone, { instance } from './Drone';
 
+const map = (input: number, in_min: number, in_max: number, out_min: number, out_max: number) => {
+    return (input - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
 
 dotenv.config();
 process.env.LOG_LEVEL = 'Info';
@@ -50,6 +53,26 @@ app.get('/getData', (req, res) => {
 
 app.post('/fly', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
+    let payload = req.body.payload;
+    // console.log(Date.now(), "test:", payload)
+
+    // Left stick actions
+    if(payload.altStick.x !== 0) {
+        const heading = MockDrone.getHeading();
+        MockDrone.setHeading(heading + map(payload.altStick.x, -100, 100, -0.5, 0.5))
+    }
+    if(payload.altStick.y !== 0) {
+        const alt = MockDrone.getAltitude();
+        MockDrone.setAltitude(alt + map(payload.altStick.y, -100, 100, -0.5, 0.5))
+    }
+
+    // Right stick actions
+    if(payload.dirStick.x !== 0 || payload.dirStick.y !== 0 ) {
+        const { latitude, longitude } = MockDrone.getGPS();
+        MockDrone.setGPS(latitude + map(payload.dirStick.y, -100, 100, -0.000005, 0.000005), 
+                        longitude + map(payload.dirStick.x, -100, 100, -0.000005, 0.000005))
+    }
+
     res.send({
         status:  true
     });

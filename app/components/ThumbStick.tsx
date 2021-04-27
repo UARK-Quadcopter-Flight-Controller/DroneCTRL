@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, PanResponder, Animated,  } from "react-native";
+import { map } from '../helpers/math'
+
+
 
 interface props {
     thumbStickLocation: (x: number, y: number) => void;
@@ -8,13 +11,15 @@ interface props {
 
 class Draggable extends Component<props, {}> {
   constructor(props: props) {
+    console.disableYellowBox = true;
     super(props);
 
     this.state = {
       showDraggable: true,
       dropAreaValues: null,
       pan: new Animated.ValueXY(),
-      opacity: new Animated.Value(1)
+      opacity: new Animated.Value(1),
+      yRest: 0
     };
   }
 
@@ -25,41 +30,54 @@ class Draggable extends Component<props, {}> {
     this.panResponder = PanResponder.create({
         onStartShouldSetPanResponder: (e, gesture) => true,
         onPanResponderGrant: (e, gesture) => {
-          this.state.pan.setOffset({
-            x: this._val.x,
-            y:this._val.y
-          })
-          this.state.pan.setValue({ x:0, y:0})
-        },
-        onPanResponderMove: (e, gesture) => { this.boundsLimit(gesture.dx, gesture.dy) == false ? null : Animated.event([ 
+            if(this.props.isThrottle)
+            {
+              this.state.pan.setOffset({
+                  x:this._val.x,
+                  y:this._val.y
+              })
+            }
+            else
+            {
+              this.state.pan.setOffset({
+                  x:0,
+                  y:0
+              })
+            }
+            //console.log(this._val.y)
+            this.state.pan.setValue({ x:0, y:0})
+          },
+        onPanResponderMove: (e, gesture) => {this.boundsLimit(gesture.dx, gesture.dy, this._val.y) == false ? null : Animated.event([ 
           null, { dx: this.state.pan.x, dy: this.state.pan.y }
-        ], {useNativeDriver: false})(e, gesture); this.props.thumbStickLocation(this.state.pan.x._value, this.state.pan.y._value);},
+        ], {useNativeDriver: false})(e, gesture); this.props.thumbStickLocation(map(this._val.x, -80, 80, -100, 100), map(this._val.y, 80, -80, -100, 100));},
         onPanResponderRelease: (e, gesture) => {
           Animated.spring(this.state.pan, {
             toValue: this.props.isThrottle ? { x:0, y:this.state.pan.y._value} : { x:0, y:0},
-            friction: 100,
+            friction: 500,
             useNativeDriver: false
           }).start();
-          if(this.props.isThrottle) { this.props.thumbStickLocation(0, this.state.pan.y._value); }
+          if(this.props.isThrottle) { this.props.thumbStickLocation(0, map(this._val.y, 80, -80, -100, 100)); }
           else { this.props.thumbStickLocation(0, 0); }
+          this.setState({ yRest: this.state.pan.y._value})
         }
       });
   }
 
-  boundsLimit(x, y) {
-	// console.log(x + " " + y, Date.now(), this.props.isThrottle)
-	if((x > 80) || (x < -80))
-	{
-		//Change to send altitude change
-		return false;
-	}
-	if((y > 80) || (y < -80))
-	{
-		//Change to send altitude change
-		return false;
-	}
+  boundsLimit(dx, dy, y) {
+    //console.log(x + " " + y, Date.now(), this.props.isThrottle)
+    // console.log(y)
+    if((dx > 80) || (dx < -80))
+    {
+        //Change to send altitude change
+        return false;
+    }
+    if(((y > 80) && (dy + y > 80)) || ((y < -80) && (dy + y < -80)))
+    {
+        //Change to send altitude change
+        return false;
+    }
     return true;
-  }
+}
 
   render() {
     return (

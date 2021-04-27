@@ -99,6 +99,8 @@ export default class Drone {
         // Guard clause
         if(!altitude && typeof(altitude) !== 'number') { this.Logger.error(`No altitude was passed to the ${this.setAltitude.name} call`); return; }
 
+        if(altitude <= 0) { return }
+
         this.altitude = altitude;
         this.Logger.debug(`Set altitude to ${altitude} ft`);
 
@@ -154,8 +156,14 @@ export default class Drone {
 
         // Guard clauses
         if(!heading && typeof(heading) !== 'number') { this.Logger.error(`No heading was passed to the ${this.setHeading.name} call`); return; }
-
-        this.heading = heading;
+        
+        if(this.heading < 0) {
+            this.heading = 359;
+        }
+        else if(this.heading > 359.999) {
+            this.heading = heading % 360;
+        }
+        else this.heading = heading;
         this.Logger.debug(`Set heading to ${heading} degrees`);
 
         this.Logger.trace(`Finishing ${this.setHeading.name}`);
@@ -225,6 +233,8 @@ export default class Drone {
         let newBattery = 100 - ((100 / (10 * 60) * secOn));
         this.setBattery(newBattery);
 
+        // this.setHeading(this.getHeading() + 3);
+
         this.Logger.trace(`Finishing ${this.getBattery.name} with: `, { battery: this.battery });
         return this.battery;
     }
@@ -234,11 +244,12 @@ export default class Drone {
 
         // Guard clauses
         if(!battery && typeof(battery) !== 'number') { this.Logger.error(`No battery was passed to the ${this.setBattery.name} call`); return; }
-        if(battery > 100 || battery < 0) { this.Logger.error(`Illegal battery value was passed to the function ${this.setBattery.name}: ${battery}`); return; }
+        
+        if(battery > 100) { this.battery = 100; return; }
+        else if(battery < 0) { this.battery = 0; return; }
+        else { this.battery = battery; }
 
-        this.battery = battery;
-        this.Logger.debug(`Set battery to ${battery} percent`);
-
+        this.Logger.debug(`Set battery to ${this.battery} percent`);
         this.Logger.trace(`Finishing ${this.setBattery.name}`);
     }
 
