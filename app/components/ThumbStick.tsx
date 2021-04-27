@@ -1,3 +1,7 @@
+/*
+ * This file holds the ThumbSticks
+ */
+
 import React, { Component } from "react";
 import { StyleSheet, View, Text, PanResponder, Animated,  } from "react-native";
 import { map } from '../helpers/math'
@@ -5,11 +9,19 @@ import { map } from '../helpers/math'
 
 
 interface props {
+  /**
+   * Creates an instance of the callback function to hold the Thumbstock location.
+   * Also checks if the ThumbStick is the Throttle or not
+   *
+   */
     thumbStickLocation: (x: number, y: number) => void;
     isThrottle?: boolean
 };
 
 class Draggable extends Component<props, {}> {
+  /**
+   * This class holds the draggability of the joyStick
+   */
   constructor(props: props) {
     console.disableYellowBox = true;
     super(props);
@@ -24,6 +36,9 @@ class Draggable extends Component<props, {}> {
   }
 
   componentWillMount() {
+	/**
+	 * Creates a panResponder that will move the joyStick and interact on gesture
+	 */
     this._val = { x:0, y:0 }
     this.state.pan.addListener((value) => this._val = value);
 
@@ -63,19 +78,27 @@ class Draggable extends Component<props, {}> {
       });
   }
 
-  boundsLimit(dx, dy, y) {
-    //console.log(x + " " + y, Date.now(), this.props.isThrottle)
-    // console.log(y)
-    if((dx > 80) || (dx < -80))
-    {
-        //Change to send altitude change
-        return false;
-    }
-    if(((y > 80) && (dy + y > 80)) || ((y < -80) && (dy + y < -80)))
-    {
-        //Change to send altitude change
-        return false;
-    }
+  boundsLimit(x, y) {
+	/**
+	 * Checks to see if the x and the y that is given is within the bounds
+	 *
+	 * @param x holds the x value of where our gesture is currently
+	 *
+	 * @param y holds the y value of where our gesture is currently
+	 *
+	 * @returns true if the gesture is within bounds. Otherwise, false
+	 */
+	// console.log(x + " " + y, Date.now(), this.props.isThrottle)
+	if((x > 80) || (x < -80))
+	{
+		//Change to send altitude change
+		return false;
+	}
+	if((y > 80) || (y < -80))
+	{
+		//Change to send altitude change
+		return false;
+	}
     return true;
 }
 
@@ -106,6 +129,9 @@ class Draggable extends Component<props, {}> {
 
 
 export default class App extends Component<props, {}> {
+	/**
+	 * Holds both the Joystick and the boundary container
+	 */
     constructor(props: props) {
         super();
 
@@ -124,6 +150,10 @@ export default class App extends Component<props, {}> {
 
 let CIRCLE_RADIUS = 25;
 const styles = StyleSheet.create({
+/**
+ * This consists of all of the styles necessary in this portion of the app.
+ *
+ */
   container: {
     alignItems: "center",
     justifyContent: "center",

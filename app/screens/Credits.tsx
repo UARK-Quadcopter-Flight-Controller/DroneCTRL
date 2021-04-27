@@ -1,12 +1,30 @@
+/*
+ * This file displays credits where they are due
+ */
+
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { screens } from "../types";
 
 interface props {
+  /**
+   * Creates an instance of the callback function to change screens
+   *
+   * @remarks
+   * Calls the screenchange which will change the app.tsx
+   */
   onScreenChange(screen: screens): void;
 }
 
 export default function Credits(props: props) {
+  /**
+   * Shows the credits of the icons, pictures, etc that are required to not plagarize
+   * 
+   * @param props holds information from other screens
+   *
+   * @returns a map of the area
+   * 
+   */
   return (
     <View style={styles.container}>
       <Text>
@@ -30,6 +48,10 @@ export default function Credits(props: props) {
 }
 
 const styles = StyleSheet.create({
+/**
+ * This consists of all of the styles necessary in this portion of the app.
+ *
+ */
     container: {
       flex: 1,
       backgroundColor: "#fff",

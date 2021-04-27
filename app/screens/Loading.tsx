@@ -1,3 +1,14 @@
+/*
+ * This file focuses on making sure that everything is loaded correctly
+ *
+ * @privateRemarks
+ * 
+ * This file needs some cleaning up. I was initially just testing the location
+ * permissions and first launch on the loading screen was a good place if any to try
+ * implementing that. For a 'release' it is probably best to ensure location is enabled
+ * and that there is access to the drone network (bypassed with OVERRIDE_LOADING...)
+ */
+
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import {
@@ -18,17 +29,27 @@ import droneImage from "../assets/drone-logo.png";
 import { OVERRIDE_LOADING_SCREEN_LOCKOUT } from "@appconfig";
 import { screenPortrait } from "../hooks/screenOrientation";
 
-// README: This file needs some cleaning up. I was initially just testing the location
-// permissions and first launch on the loading screen was a good place if any to try
-// implementing that. For a 'release' it is probably best to ensure location is enabled
-// and that there is access to the drone network (bypassed with OVERRIDE_LOADING...)
-
 interface props {
+  /**
+   * Creates an instance of the callback function to change screens
+   *
+   * @remarks
+   * Calls the screenchange which will change the app.tsx
+   */
   onScreenChange(screen: screens): void;
 }
 
 export default function Loading(props: props) {
-  // Enfore portrait orientation
+  /**
+   * Enforces a portrait orientation of the app and loads the app according to a list below:
+   * 
+   * GPS
+   * ESP HTTP (TODO) @Override
+   * ESP TCP (TODO)
+   * 
+   * @param props holds information from other screens
+   *
+   */
   screenPortrait();
 
   // State variables
@@ -54,9 +75,11 @@ export default function Loading(props: props) {
   } else if (location) {
     text = JSON.stringify(location);
   }
-
-  // In the case that we are not connected to the ESP and are developing,
-  // we can use the .env parameter to override the "am I connected" check
+  /**
+   * @privateRemarks
+   * In the case that we are not connected to the ESP and are developing,
+   * we can use the .env parameter to override the "am I connected" check
+   */
   if (location) {
     // On the fly replace current location with ENGR yard so I don't dox myself
     location.coords.latitude = 36.068429;
@@ -113,6 +136,10 @@ export default function Loading(props: props) {
 }
 
 const styles = StyleSheet.create({
+/**
+ * This consists of all of the styles necessary in this portion of the app.
+ *
+ */
   container: {
     flex: 1,
     backgroundColor: "#000",
